@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Student Information System</title>
+</head>
+<body>
+    <h2>Student Information System</h2>
+    <form id="studentForm">
+        <label for="name">Name:</label><br>
+        <input type="text" id="name" name="name"><br>
+        <label for="email">Email:</label><br>
+        <input type="text" id="email" name="email"><br>
+        <button type="button" onclick="addStudent()">Add Student</button>
+    </form>
+    <h3>Students</h3>
+    <ul id="studentList"></ul>
+
+    <script>
+        function addStudent() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+
+            fetch('http://<your-alb-dns-name>/add_student.php', { // Use full URL for CORS
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ name: name, email: email })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message);
+                loadStudents();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function loadStudents() {
+            fetch('http://<your-alb-dns-name>/get_students.php') // Use full URL for CORS
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Received data:', data); // Log the received data
+                const studentList = document.getElementById('studentList');
+                studentList.innerHTML = '';
+                data.forEach(student => {
+                    const li = document.createElement('li');
+                    li.textContent = `Name: ${student.name}, Email: ${student.email}`;
+                    studentList.appendChild(li);
+                });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        // Load students on page load
+        document.addEventListener('DOMContentLoaded', loadStudents);
+    </script>
+</body>
+</html>
