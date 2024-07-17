@@ -1,6 +1,6 @@
 <?php
 // Enable CORS
-header('Access-Control-Allow-Origin: http://<frontend-ip>');
+header('Access-Control-Allow-Origin: http://<frontend-publicip>');
 header('Access-Control-Allow-Methods: GET, POST, OPTIONS');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json');
